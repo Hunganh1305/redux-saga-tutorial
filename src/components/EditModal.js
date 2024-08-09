@@ -22,8 +22,6 @@ class EditModal extends Component {
                 lastName: this.props.item.lastName
             });
         }
-        console.log('update', this.props.item);
-
     }
 
     handleChange = (e) => {

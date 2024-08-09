@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 
-const UserListItem = ({ user, onDeleteClick }) => {
+const UserListItem = ({ user, onDeleteClick, onEditUserClick, onOpenEditModal }) => {
 
     const stringToHslColor = (str = '') => {
         let hash = 0;
@@ -30,6 +30,11 @@ const UserListItem = ({ user, onDeleteClick }) => {
             </div>
             <div style={{ margin: 'auto 0', flexGrow: 1, paddingLeft: '10px' }}>
                 {user.firstName} {user.lastName}
+            </div>
+            <div style={{ margin: 'auto 0', marginRight: '10px' }}>
+                <Button size="sm" color="primary" outline onClick={() => onEditUserClick(user)}>
+                    Edit
+                </Button>
             </div>
             <div style={{ margin: 'auto 0' }}>
                 <Button size="sm" color="danger" outline onClick={() => onDeleteClick(user.id)}>

@@ -4,6 +4,7 @@ export const Types = {
     USERS_ERROR: 'users/user_error',
     ADD_USER: 'ADD_USER',
     DELETE_USER: 'DELETE_USER',
+    EDIT_USER: 'EDIT_USER',
 };
 
 
@@ -30,4 +31,9 @@ export const addUser = (user) => ({
 export const deleteUser = (userId) => ({
     type: Types.DELETE_USER,
     payload: userId
+});
+
+export const editItem = (item) => ({
+    type: Types.EDIT_USER,
+    payload: item
 });

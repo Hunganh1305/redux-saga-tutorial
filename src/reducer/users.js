@@ -30,6 +30,14 @@ export default function users(state = INITIAL_STATE, action) {
                 items: state.items.filter((user) => user.id !== action.payload),
             };
         }
+        case Types.EDIT_USER: {
+            return {
+                ...state,
+                items: state.items.map(item =>
+                    item.id === action.payload.id ? { ...item, ...action.payload } : item
+                )
+            };
+        }
         default: {
             return state;
         }

@@ -1,8 +1,8 @@
 import React from 'react';
 import UserListItem from './UserListItem';
-import {ListGroup, ListGroupItem} from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
-const UserList = ({users, onDeleteUserClick}) => {
+const UserList = ({ users, onDeleteUserClick, onEditUserClick }) => {
     return (
         <ListGroup>
             {users.sort((a, b) => {
@@ -19,7 +19,7 @@ const UserList = ({users, onDeleteUserClick}) => {
             }).map((user) => {
                 return (
                     <ListGroupItem key={user.id}>
-                        <UserListItem onDeleteClick={onDeleteUserClick} user={user}/>
+                        <UserListItem onDeleteClick={onDeleteUserClick} onEditUserClick={onEditUserClick} user={user} />
                     </ListGroupItem>
                 );
             })}

@@ -19,13 +19,14 @@ class App extends Component {
 
 
     handleCreateUserSubmit = ({ firstName, lastName }) => {
+        const items = this.props.users;
+        const existingIds = items.items.map(item => item.id);
+        const newId = this.generateUniqueId(existingIds);
         const newUser = {
-            id: 16,
+            id: newId,
             firstName: firstName,
             lastName: lastName,
         };
-        console.log(newUser);
-
         this.props.addUser(newUser);
 
     };
@@ -66,10 +67,15 @@ class App extends Component {
         });
     };
 
-    render() {
-        // const stateUser = useSelector((state) => state.items)
-        // console.log('stateUser', stateUser);
+    generateUniqueId = (existingIds) => {
+        let id;
+        do {
+            id = Math.floor(10 + Math.random() * 90);
+        } while (existingIds.includes(id));
+        return id;
+    };
 
+    render() {
         const users = this.props.users;
         const { isModalOpen, itemToEdit } = this.state;
 

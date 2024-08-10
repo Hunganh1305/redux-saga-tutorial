@@ -3,15 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^5.20.0",
     "axios": "^1.7.3",
-    "bootstrap": "^4.2.1",
+    "bootstrap": "^5.3.3",
     "jquery": "^3.3.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-modal": "^3.16.1",
     "react-redux": "^5.1.1",
     "react-scripts": "^5.0.1",
-    "reactstrap": "^6.5.0",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.2"
   },

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from 'reactstrap';
+import { Button } from 'antd';
 
-const UserListItem = ({ user, onDeleteClick, onEditUserClick, onOpenEditModal }) => {
+const UserListItem = ({ user, onDeleteClick, onEditUserClick }) => {
 
     const stringToHslColor = (str = '') => {
         let hash = 0;
@@ -14,32 +14,36 @@ const UserListItem = ({ user, onDeleteClick, onEditUserClick, onOpenEditModal })
     };
 
     return (
-        <div style={{ display: 'flex' }}>
-            <div style={{
-                margin: 'auto 0',
-                textAlign: 'center',
-                height: '40px',
-                width: '40px',
-                lineHeight: '40px',
-                borderRadius: '50%',
-                color: 'white',
-                fontWeight: 'bold',
-                background: stringToHslColor(user.firstName + user.lastName)
-            }}>
-                {!!user && !!user.firstName && !!user.lastName ? user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase() : ''}
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ display: 'flex' }}>
+                <div style={{
+                    margin: 'auto 0',
+                    textAlign: 'center',
+                    height: '40px',
+                    width: '40px',
+                    lineHeight: '40px',
+                    borderRadius: '50%',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    background: stringToHslColor(user.firstName + user.lastName)
+                }}>
+                    {!!user && !!user.firstName && !!user.lastName ? user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase() : ''}
+                </div>
+                <div style={{ margin: 'auto 0', paddingLeft: '10px' }}>
+                    {user.firstName} {user.lastName}
+                </div>
             </div>
-            <div style={{ margin: 'auto 0', flexGrow: 1, paddingLeft: '10px' }}>
-                {user.firstName} {user.lastName}
-            </div>
-            <div style={{ margin: 'auto 0', marginRight: '10px' }}>
-                <Button size="sm" color="primary" outline onClick={() => onEditUserClick(user)}>
-                    Edit
-                </Button>
-            </div>
-            <div style={{ margin: 'auto 0' }}>
-                <Button size="sm" color="danger" outline onClick={() => onDeleteClick(user.id)}>
-                    Delete
-                </Button>
+            <div style={{ display: 'flex' }}>
+                <div style={{ margin: 'auto 0', marginRight: '10px' }}>
+                    <Button type="primary" value="large" onClick={() => onEditUserClick(user)}>
+                        Edit
+                    </Button>
+                </div>
+                <div style={{ margin: 'auto 0' }}>
+                    <Button type="primary" value="large" danger onClick={() => onDeleteClick(user.id)}>
+                        Delete
+                    </Button>
+                </div>
             </div>
         </div>
     );

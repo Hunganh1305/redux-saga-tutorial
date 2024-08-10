@@ -1,6 +1,5 @@
-// EditModal.js
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, Button, Form, Input } from 'antd';
 
 
 class EditModal extends Component {
@@ -38,36 +37,37 @@ class EditModal extends Component {
         const { isOpen, onClose } = this.props;
         const { firstName, lastName } = this.state;
         return (
-            <Modal isOpen={isOpen} toggle={onClose}>
-                <ModalHeader toggle={onClose}>Edit Item</ModalHeader>
-                <ModalBody>
-                    <Form>
-                        <FormGroup>
-                            <Label for="firstName">First Name</Label>
-                            <Input
-                                type="text"
-                                id="firstName"
-                                name="firstName"
-                                value={firstName}
-                                onChange={this.handleChange}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="lastName">Last Name</Label>
-                            <Input
-                                type="text"
-                                id="lastName"
-                                name="lastName"
-                                value={lastName}
-                                onChange={this.handleChange}
-                            />
-                        </FormGroup>
-                    </Form>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={this.handleSave}>Save</Button>{' '}
-                    <Button color="secondary" onClick={onClose}>Cancel</Button>
-                </ModalFooter>
+            <Modal
+                title="Edit Item"
+                open={isOpen}
+                onCancel={onClose}
+                footer={[
+                    <Button key="cancel" onClick={onClose}>
+                        Cancel
+                    </Button>,
+                    <Button key="save" type="primary" onClick={this.handleSave}>
+                        Save
+                    </Button>,
+                ]}
+            >
+                <Form layout="vertical">
+                    <Form.Item label="First Name">
+                        <Input
+                            id="firstName"
+                            name="firstName"
+                            value={firstName}
+                            onChange={this.handleChange}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Last Name">
+                        <Input
+                            id="lastName"
+                            name="lastName"
+                            value={lastName}
+                            onChange={this.handleChange}
+                        />
+                    </Form.Item>
+                </Form>
             </Modal>
         );
     }

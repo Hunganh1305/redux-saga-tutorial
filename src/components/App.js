@@ -4,7 +4,7 @@ import UserList from './UserList';
 import EditModal from './EditModal';
 import { connect } from 'react-redux';
 import { getUsersRequest, usersError, addUser, deleteUser, editItem } from '../actions/user';
-import { Alert } from 'reactstrap';
+import { Alert, Modal } from 'antd';
 
 class App extends Component {
     constructor(props) {
@@ -32,10 +32,15 @@ class App extends Component {
     };
 
     handleDeleteUserClick = (userId) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this item?');
-        if (confirmDelete) {
-            this.props.deleteUser(userId);
-        }
+        Modal.confirm({
+            title: 'Are you sure you want to delete this item?',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk: () => {
+                this.props.deleteUser(userId);
+            },
+        });
     };
 
     handleEditUserClick = (user) => {
@@ -84,9 +89,15 @@ class App extends Component {
                 <h2>
                     Users
                 </h2>
-                <Alert color="danger" isOpen={!!this.props.users.error} toggle={this.handleCloseAlert}>
-                    {this.props.users.error}
-                </Alert>
+                {users.error && (
+                    <Alert
+                        message="Error"
+                        description={users.error}
+                        type="error"
+                        closable
+                        onClose={this.handleCloseAlert}
+                    />
+                )}
                 <NewUserForm onSubmit={this.handleCreateUserSubmit} />
                 {!!users.items && !!users.items.length &&
                     <UserList onDeleteUserClick={this.handleDeleteUserClick} onEditUserClick={this.handleEditUserClick} users={users.items} />

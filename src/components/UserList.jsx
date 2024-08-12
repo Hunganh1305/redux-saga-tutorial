@@ -3,18 +3,15 @@ import UserListItem from './UserListItem';
 import { List } from 'antd';
 
 const UserList = ({ users, onDeleteUserClick, onEditUserClick }) => {
-    const sortedUsers = users.sort((a, b) => {
-        if (a.firstName > b.firstName) {
-            return 1;
-        } else if (a.firstName < b.firstName) {
-            return -1;
-        } else if (a.lastName > b.lastName) {
-            return 1;
-        } else if (a.lastName < b.lastName) {
-            return -1;
-        }
-        return 0;
-    });
+    const sortedUsers = React.useMemo(() => {
+        return [...users].sort((a, b) => {
+            if (a.firstName !== b.firstName) {
+                return a.firstName.localeCompare(b.firstName);
+            }
+            return a.lastName.localeCompare(b.lastName);
+        });
+    }, [users]);
+
     return (
         <List
             itemLayout="horizontal"
@@ -33,3 +30,4 @@ const UserList = ({ users, onDeleteUserClick, onEditUserClick }) => {
 };
 
 export default UserList;
+

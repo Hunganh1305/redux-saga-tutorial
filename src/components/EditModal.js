@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input } from 'antd';
 
-
 class EditModal extends Component {
     constructor(props) {
         super(props);
@@ -23,12 +22,9 @@ class EditModal extends Component {
         }
     }
 
-    handleChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    handleSave = () => {
-        const { id, firstName, lastName } = this.state;
+    handleFinish = (values) => {
+        const { id } = this.state;
+        const { firstName, lastName } = values;
         this.props.onSave({ id, firstName, lastName });
         this.props.onClose();
     }
@@ -45,27 +41,30 @@ class EditModal extends Component {
                     <Button key="cancel" onClick={onClose}>
                         Cancel
                     </Button>,
-                    <Button key="save" type="primary" onClick={this.handleSave}>
+                    <Button key="save" type="primary" form="editForm" htmlType="submit">
                         Save
                     </Button>,
                 ]}
             >
-                <Form layout="vertical">
-                    <Form.Item label="First Name">
-                        <Input
-                            id="firstName"
-                            name="firstName"
-                            value={firstName}
-                            onChange={this.handleChange}
-                        />
+                <Form
+                    id="editForm"
+                    layout="vertical"
+                    initialValues={{ firstName, lastName }}
+                    onFinish={this.handleFinish}
+                >
+                    <Form.Item
+                        label="First Name"
+                        name="firstName"
+                        rules={[{ required: true, message: 'Please input the first name!' }]}
+                    >
+                        <Input />
                     </Form.Item>
-                    <Form.Item label="Last Name">
-                        <Input
-                            id="lastName"
-                            name="lastName"
-                            value={lastName}
-                            onChange={this.handleChange}
-                        />
+                    <Form.Item
+                        label="Last Name"
+                        name="lastName"
+                        rules={[{ required: true, message: 'Please input the last name!' }]}
+                    >
+                        <Input />
                     </Form.Item>
                 </Form>
             </Modal>

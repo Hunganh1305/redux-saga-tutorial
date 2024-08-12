@@ -2,32 +2,12 @@ import React, { Component } from "react";
 import { Button, Form, Input } from "antd";
 
 class NewUserForm extends Component {
-    state = {
-        firstName: "",
-        lastName: "",
-    };
     formRef = React.createRef();
 
-    handleSubmit = () => {
-        const { firstName, lastName } = this.state;
-        this.setState({
-            firstName: "",
-            lastName: "",
-        });
+    handleFinish = (values) => {
+        const { firstName, lastName } = values;
         this.props.onSubmit({ firstName, lastName });
         this.formRef.current.resetFields();
-    };
-
-    handleFirstNameChange = (e) => {
-        this.setState({
-            firstName: e.target.value,
-        });
-    };
-
-    handleLastNameChange = (e) => {
-        this.setState({
-            lastName: e.target.value,
-        });
     };
 
     render() {
@@ -35,7 +15,7 @@ class NewUserForm extends Component {
             <Form
                 ref={this.formRef}
                 layout="vertical"
-                onFinish={this.handleSubmit}
+                onFinish={this.handleFinish}
                 initialValues={{ firstName: "", lastName: "" }}
             >
                 <Form.Item
@@ -43,20 +23,14 @@ class NewUserForm extends Component {
                     name="firstName"
                     rules={[{ required: true, message: "Please enter your first name" }]}
                 >
-                    <Input
-                        value={this.state.firstName}
-                        onChange={this.handleFirstNameChange}
-                    />
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     label="Last name"
                     name="lastName"
                     rules={[{ required: true, message: "Please enter your last name" }]}
                 >
-                    <Input
-                        value={this.state.lastName}
-                        onChange={this.handleLastNameChange}
-                    />
+                    <Input />
                 </Form.Item>
                 <Form.Item>
                     <Button block type="primary" value="large" htmlType="submit">

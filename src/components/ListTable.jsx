@@ -10,10 +10,7 @@ const ListTable = () => {
     data: users,
     loading,
     error,
-    currentPage,
-    totalPages,
-    pageSize,
-    fetchData,
+    pagination,
     updateItem,
     deleteItem,
     changePage,
@@ -22,10 +19,6 @@ const ListTable = () => {
 
   const { isOpen, open, close } = useDisclosure();
   const [itemToEdit, setItemToEdit] = useState(null);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const handleDelete = (id) => {
     Modal.confirm({
@@ -43,8 +36,6 @@ const ListTable = () => {
   };
 
   const handleSaveEdit = (editedItem) => {
-    console.log("handle save edit", editedItem);
-
     updateItem(editedItem.id, editedItem);
     close();
   };
@@ -89,8 +80,10 @@ const ListTable = () => {
       </div>
     );
   }
-  if (error)
+
+  if (error) {
     return <Alert message="Error" description={error} type="error" showIcon />;
+  }
 
   const handleBackClick = () => {
     navigate("/");
@@ -113,9 +106,9 @@ const ListTable = () => {
         rowKey="id"
       />
       <Pagination
-        current={currentPage}
-        total={totalPages * pageSize}
-        pageSize={pageSize}
+        current={pagination.currentPage}
+        total={pagination.totalPages * pagination.pageSize}
+        pageSize={pagination.pageSize}
         onChange={changePage}
         onShowSizeChange={(current, size) => changePageSize(size)}
       />

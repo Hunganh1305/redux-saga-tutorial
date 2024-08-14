@@ -12,7 +12,7 @@ import {
 } from "../actions/user";
 import { Alert, Modal, Button } from "antd";
 import useDisclosure from "../hooks/useDisclosure";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const App = ({
   users,
@@ -24,6 +24,7 @@ const App = ({
 }) => {
   const { isOpen, open, close } = useDisclosure();
   const [itemToEdit, setItemToEdit] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUsersRequest();
@@ -51,8 +52,13 @@ const App = ({
   };
 
   const handleEditUserClick = (user) => {
-    setItemToEdit(user);
-    open();
+    // setItemToEdit(user);
+    // open();
+    navigate(`/edit-page/${user.id}`, {
+      state: {
+        users: users,
+      },
+    });
   };
 
   const handleSaveEdit = (editedItem) => {

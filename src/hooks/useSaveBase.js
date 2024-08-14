@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import API_BASE_URL from "../api/apiConfig";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "antd";
 
 const useSaveBase = (
   initialData = {
@@ -43,8 +44,15 @@ const useSaveBase = (
         navigate("/");
         return response.data;
       } catch (err) {
-        navigate("/");
         setError(err.message);
+        Modal.confirm({
+          title: err.message,
+          content: "Turn back to Home Page",
+          type: "error",
+          okText: "Ok",
+          cancelText: '',
+          onOk: () => navigate("/"),
+        });
       } finally {
         setLoading(false);
       }

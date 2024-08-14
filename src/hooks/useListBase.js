@@ -1,36 +1,29 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import useFetch from "./useFetch";
 
-const useListBase = (apiUrl) => {
+const useListBase = (apiUrl, options = {}) => {
+  const { data: fetchedData, loading, error } = useFetch(apiUrl, options);
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
-
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(apiUrl);
-      const paginatedItems = getPaginatedItems(
-        response.data.data,
-        currentPage,
-        pageSize
-      );
-      setData(paginatedItems);
-      setTotalPages(Math.ceil(response.data.total / pageSize));
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [apiUrl, currentPage, pageSize]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 5,
+  });
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (fetchedData) {
+      const paginatedItems = getPaginatedItems(
+        fetchedData.data,
+        pagination.currentPage,
+        pagination.pageSize
+      );
+      setData(paginatedItems);
+      setPagination((prevPagination) => ({
+        ...prevPagination,
+        totalPages: Math.ceil(fetchedData.total / prevPagination.pageSize),
+      }));
+    }
+  }, [fetchedData, pagination.currentPage, pagination.pageSize]);
 
   const updateItem = (id, updatedData) => {
     setData((prevData) =>
@@ -41,7 +34,23 @@ const useListBase = (apiUrl) => {
   };
 
   const deleteItem = (id) => {
-    setData((prevData) => prevData.filter((item) => item.id !== id));
+    setData((prevData) => {
+      const updatedData = prevData.filter((item) => item.id !== id);
+      const newTotalPages = Math.ceil(updatedData.length / pagination.pageSize);
+
+      const newCurrentPage =
+        pagination.currentPage > newTotalPages && newTotalPages > 0
+          ? newTotalPages
+          : pagination.currentPage;
+
+      setPagination((prevPagination) => ({
+        ...prevPagination,
+        currentPage: newCurrentPage,
+        totalPages: newTotalPages,
+      }));
+
+      return updatedData;
+    });
   };
 
   const getPaginatedItems = (data, currentPage, pageSize) => {
@@ -51,24 +60,27 @@ const useListBase = (apiUrl) => {
   };
 
   const changePage = (page) => {
-    const paginatedItems = getPaginatedItems(data, currentPage, pageSize);
+    const paginatedItems = getPaginatedItems(data, page, pagination.pageSize);
     setData(paginatedItems);
-    setCurrentPage(page);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      currentPage: page,
+    }));
   };
 
   const changePageSize = (size) => {
-    setPageSize(size);
-    setCurrentPage(1);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      pageSize: size,
+      currentPage: 1,
+    }));
   };
 
   return {
     data,
     loading,
     error,
-    currentPage,
-    totalPages,
-    pageSize,
-    fetchData,
+    pagination,
     updateItem,
     deleteItem,
     changePage,

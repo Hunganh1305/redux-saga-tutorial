@@ -52,8 +52,6 @@ const App = ({
   };
 
   const handleEditUserClick = (user) => {
-    // setItemToEdit(user);
-    // open();
     navigate(`/edit-page/${user.id}`, {
       state: {
         users: users,

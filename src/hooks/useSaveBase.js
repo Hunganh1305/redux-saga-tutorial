@@ -1,72 +1,60 @@
 import { useState, useCallback } from "react";
-import API_BASE_URL from "../api/apiConfig";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "antd";
+import useFetch from "./useFetch";
 
-const useSaveBase = (
-  initialData = {
-    id: "",
-    firstName: "",
-    lastName: "",
-  },
-  isEditMode = false,
-  endpoint = ""
-) => {
-  const [formData, setFormData] = useState(initialData);
+const useSaveBase = (apiEndpoint, navigateRouting) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  }, []);
+  const {
+    fetchData,
+    data,
+    error: fetchError,
+    loading: fetchLoading,
+  } = useFetch(apiEndpoint);
 
   const handleSubmit = useCallback(
     async (values) => {
       setLoading(true);
       setError(null);
-      console.log(values);
+
+      const isEditMode = Boolean(values.id);
+      const method = isEditMode ? "PUT" : "POST";
+      const url = isEditMode ? `${apiEndpoint}/${values.id}` : apiEndpoint;
+      fetchData(url, method, values);
 
       try {
-        let response;
-        if (isEditMode) {
-          response = await API_BASE_URL.put(
-            `${endpoint}/${formData.id}`,
-            values
-          );
-        } else {
-          response = await API_BASE_URL.post(endpoint, values);
+        await fetchData();
+
+        if (fetchError) {
+          throw new Error(fetchError);
         }
-        navigate("/");
-        return response.data;
+
+        if (data) {
+          navigate(navigateRouting);
+        }
       } catch (err) {
         setError(err.message);
         Modal.confirm({
           title: err.message,
-          content: "Turn back to Home Page",
+          content: "An error occurred. Returning to the home page.",
           type: "error",
           okText: "Ok",
-          cancelText: '',
-          onOk: () => navigate("/"),
+          cancelText: "",
+          onOk: () => navigate(navigateRouting),
         });
       } finally {
-        setLoading(false);
+        setLoading(fetchLoading);
       }
     },
-    [formData, isEditMode, endpoint, navigate]
+    [apiEndpoint, navigate, fetchData, data, fetchError, fetchLoading]
   );
 
   return {
-    formData,
     loading,
     error,
-    handleChange,
     handleSubmit,
-    setFormData,
   };
 };
 

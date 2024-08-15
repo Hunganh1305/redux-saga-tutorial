@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Input, Spin } from "antd";
-import useListBase from "../hooks/useListBase";
 import useSaveBase from "../hooks/useSaveBase";
 
 const EditPage = () => {
@@ -11,16 +10,14 @@ const EditPage = () => {
   const location = useLocation();
   const { users } = location.state;
 
-  // const { data: users } = useListBase("/users");
-  console.log("user", users);
-
   const currentItem =
     users.items.find((user) => user.id === parseInt(id)) || {};
-  const isEditMode = Boolean(currentItem && currentItem.id);
 
-  const { loading, error, handleSubmit } = useSaveBase(currentItem, isEditMode);
+  const apiEndpoint = "/users";
+  const routeToNavigate = '/';
+  const { loading, error, handleSubmit } = useSaveBase(apiEndpoint, routeToNavigate);
 
-  if (!isEditMode && !loading) {
+  if (!currentItem && !loading) {
     return (
       <div style={{ position: "fixed", top: "50%", left: "50%" }}>
         <Spin />
@@ -29,7 +26,8 @@ const EditPage = () => {
   }
 
   const handleFinish = async (values) => {
-    await handleSubmit(values);
+    const formData = { ...values, id: currentItem.id };
+    await handleSubmit(formData);
   };
 
   return (

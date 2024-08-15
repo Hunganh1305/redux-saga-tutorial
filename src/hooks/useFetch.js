@@ -1,27 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import API_BASE_URL from "../api/apiConfig";
 
-const useFetch = (url, params = {}) => {
+const useFetch = (url, params = {}, method = "GET", body = null) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await API_BASE_URL.get(url, params);
-        setData(response.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-    fetchData();
+    try {
+      let response;
+      if (method === "GET") {
+        response = await API_BASE_URL.get(url, params);
+      } else if (method === "POST") {
+        response = await API_BASE_URL.post(url, body, params);
+      } else if (method === "PUT") {
+        response = await API_BASE_URL.put(url, body, params);
+      }
+      setData(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [url]);
 
-  return { data, loading, error };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, fetchData };
 };
 
 export default useFetch;
